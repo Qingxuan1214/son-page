@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>你愿意成为我的儿子吗？</title>
+<style>
+  :root{
+    --bg:#f7eef3;
+    --panel:#fff7fb;
+    --ink:#2b2b2b;
+    --primary:#ff6b9e;
+    --primary-ink:#fff;
+    --secondary:#78a7ff;
+    --shadow: 0 12px 30px rgba(0,0,0,.12);
+    --radius: 22px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100svh; display:grid; place-items:center;
+    background: radial-gradient(1200px 800px at 50% -10%, #fff, var(--bg));
+    color:var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  }
+  .card{
+    width:min(680px, 92vw); background:var(--panel); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:28px 24px 22px; position:relative; overflow:hidden;
+  }
+  .top{
+    display:flex; gap:18px; align-items:center; justify-content:center; padding:10px 8px 6px;
+  }
+  .mascot{
+    width:120px; height:120px; flex:0 0 auto; position:relative; filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+  }
+  /* 简笔风小人（纯 CSS + SVG path） */
+  .mascot svg{width:100%; height:100%}
+  .qmark{
+    position:absolute; right:-2px; top:-6px; font-weight:800; font-size:42px; color:#8a8a8a; opacity:.7;
+  }
+  h1{
+    margin:0; font-size:clamp(20px, 3.8vw, 28px); font-weight:800; letter-spacing:.3px;
+  }
+  .hint{margin:.2rem 0 0; opacity:.7; font-size:14px; text-align:center}
+  .btns{
+    display:flex; gap:14px; justify-content:center; align-items:center; padding:22px 8px 8px; min-height:96px;
+    flex-wrap:wrap;
+  }
+  button{
+    border:0; border-radius:18px; padding:14px 22px; cursor:pointer; transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    font-size:18px; font-weight:700; letter-spacing:.5px;
+  }
+  #agree{
+    background:var(--primary); color:var(--primary-ink); box-shadow:0 10px 18px rgba(255,107,158,.35);
+    transform-origin:center;
+  }
+  #agree:hover{ transform: translateY(-2px) scale(1.03) }
+  #no{
+    background:#eaf1ff; color:#2a5bd7; box-shadow:0 8px 16px rgba(120,167,255,.26);
+  }
+  #no:hover{ transform: translateY(-2px) }
+  .footer{
+    margin-top:8px; text-align:center; font-size:12px; opacity:.55;
+  }
+</style>
+</head>
+<body>
+  <main class="card" role="dialog" aria-labelledby="q">
+    <div class="top">
+      <div class="mascot" aria-hidden="true">
+        <!-- 可爱小人（轻量 SVG） -->
+        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M66 86c0 6-5 10-12 10s-12-4-12-10V65h24v21z" fill="#dfe9ef"/>
+          <path d="M90 48c0 16-16 28-34 28S22 64 22 48s14-30 34-30 34 14 34 30z" fill="#eef6fb" stroke="#cfd9de" stroke-width="3" />
+          <circle cx="50" cy="50" r="4.5" fill="#424242"/>
+          <circle cx="76" cy="50" r="4.5" fill="#424242"/>
+          <path d="M40 70c-3 4-9 6-12 1" stroke="#cfd9de" stroke-width="6" stroke-linecap="round"/>
+          <path d="M30 30c6-10 18-14 30-14" stroke="#cfd9de" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+        </svg>
+        <div class="qmark">?</div>
+      </div>
+      <div>
+        <h1 id="q">你愿意成为我的<strong>儿子</strong>吗？</h1>
+        <p class="hint">仔细考虑考虑吧！</p>
+      </div>
+    </div>
+
+    <div class="btns">
+      <button id="no" aria-label="不愿意">不愿意</button>
+      <button id="agree" aria-live="polite" aria-label="愿意">愿意</button>
+    </div>
+
+    <div class="footer"></div>
+  </main>
+
+<script>
+  const agree = document.getElementById('agree');
+  const no = document.getElementById('no');
+
+  let scale = 1;
+  let clicks = 0;
+
+  function growAgree() {
+    clicks += 1;
+    scale = Math.min(1.0 + clicks * 0.18, 6.8);           // 逐次放大，最高 2.8 倍
+    agree.style.transform = `scale(${scale})`;
+    agree.style.boxShadow = `0 ${10 + clicks}px ${18 + clicks*1.2}px rgba(255,107,158,.35)`;
+    if (scale >= 6.4) no.textContent = '再想想？';
+    if (scale >= 6.8) no.disabled = true, no.style.opacity = .5;
+  }
+
+  no.addEventListener('click', growAgree);
+  no.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); growAgree(); }});
+
+  agree.addEventListener('click', ()=>{
+    const msg = [
+      '好耶！从今天起我们就是最强父子档 ✨',
+      '收到！我会努力当个好儿子的！',
+      '耶～拥抱一下再出发！'
+    ][Math.floor(Math.random()*3)];
+    alert(msg);
+  });
+</script>
+</body>
+</html>
